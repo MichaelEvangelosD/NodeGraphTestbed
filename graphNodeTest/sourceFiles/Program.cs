@@ -235,6 +235,10 @@ namespace graphNodeTest
         #endregion
 
         #region NODE_DELETION
+        /// <summary>
+        /// Call to display the nodes array and prompt the user which one to delete.
+        /// <para>Marks the given array index as null</para>
+        /// </summary>
         void DeleteNode()
         {
             string userChoice;
