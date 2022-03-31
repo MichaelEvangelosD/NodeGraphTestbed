@@ -1,0 +1,8 @@
+C:\Users\Admin\Desktop\graphNodeTest\bin\Debug\graphNodeTest.exe.config
+C:\Users\Admin\Desktop\graphNodeTest\bin\Debug\graphNodeTest.exe
+C:\Users\Admin\Desktop\graphNodeTest\bin\Debug\graphNodeTest.pdb
+C:\Users\Admin\Desktop\graphNodeTest\obj\Debug\graphNodeTest.csproj.AssemblyReference.cache
+C:\Users\Admin\Desktop\graphNodeTest\obj\Debug\graphNodeTest.csproj.SuggestedBindingRedirects.cache
+C:\Users\Admin\Desktop\graphNodeTest\obj\Debug\graphNodeTest.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\graphNodeTest\obj\Debug\graphNodeTest.exe
+C:\Users\Admin\Desktop\graphNodeTest\obj\Debug\graphNodeTest.pdb
