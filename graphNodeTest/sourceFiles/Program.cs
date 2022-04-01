@@ -4,8 +4,8 @@ namespace graphNodeTest
 {
     class Program
     {
-        string[] nodes = new string[5];
-        string[,] nodeConnections = new string[6, 2];
+        string[] vertexes = new string[5];
+        string[,] vertexLinks = new string[6, 2];
 
         static void Main(string[] args)
         {
@@ -60,24 +60,24 @@ namespace graphNodeTest
             switch (selection)
             {
                 case 1: //Create a new node
-                    CreateNodeSequence();
+                    CreateVertexSequence();
                     PrintSeparatorLines();
                     break;
                 case 2: //Create a new connection between nodes
-                    CreateConnectionSequence();
+                    CreateVertexEdgeSequence();
                     PrintSeparatorLines();
                     break;
                 case 3: //Display the connections between nodes
                     PrintSeparatorLines();
-                    DisplayNodeConnections();
+                    DisplayVertexLinking();
                     PrintSeparatorLines();
                     break;
                 case 4: //Prompt the user to delete a node
-                    DeleteNode();
+                    DeleteVertex();
                     PrintSeparatorLines();
                     break;
                 case 5: //Prompt the user to delete a node connection
-                    DeleteNodeConnection();
+                    DeleteVertexEdge();
                     PrintSeparatorLines();
                     break;
                 case 0: //Terminate program
@@ -94,7 +94,7 @@ namespace graphNodeTest
         /// Call to ask the user to provide a new node name and check if it exists inside the nodes array.
         /// If it doesn't exist then add it to the nodes array.
         /// </summary>
-        void CreateNodeSequence()
+        void CreateVertexSequence()
         {
             //Prompt for node name
             string givenName;
@@ -103,31 +103,31 @@ namespace graphNodeTest
                 Console.Write("Station name: ");
                 givenName = Console.ReadLine();
 
-            } while (SearchNodeName(givenName));
+            } while (SearchVertexName(givenName));
 
             //Create and add node to array
-            AddNodeToArray(givenName);
+            AddVertexToArray(givenName);
         }
 
         /// <summary>
         /// Call to create a new node with the given name to the next empty array position
         /// <para>Displays a warning if the array is full</para>
         /// </summary>
-        /// <param name="nodeName">The new node name</param>
-        void AddNodeToArray(string nodeName)
+        /// <param name="vertexName">The new node name</param>
+        void AddVertexToArray(string vertexName)
         {
-            string simplifiedName = nodeName.Replace(" ", "").ToLower();
+            string simplifiedName = vertexName.Replace(" ", "").ToLower();
             bool spaceFound = false;
 
-            for (int i = 0; i < nodes.Length; i++)
+            for (int i = 0; i < vertexes.Length; i++)
             {
-                if (nodes[i] == null)
+                if (vertexes[i] == null)
                 {
-                    nodes[i] = simplifiedName;
+                    vertexes[i] = simplifiedName;
                     spaceFound = true;
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Station {nodeName} created");
+                    Console.WriteLine($"Station {vertexName} created");
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 }
@@ -148,33 +148,33 @@ namespace graphNodeTest
         /// Call to prompt the user to input a source node and a toBeConnected node then validate if they exist.
         /// <para>If yes, then add them to the nodeConnections array.</para>
         /// </summary>
-        void CreateConnectionSequence()
+        void CreateVertexEdgeSequence()
         {
-            string nodeName, connectionName;
+            string vertexName, edgeName;
             bool spaceFound = false;
 
             Console.WriteLine("Connect which station ?");
-            nodeName = Console.ReadLine();
+            vertexName = Console.ReadLine();
 
-            Console.WriteLine($"Connect {nodeName} to ...?");
-            connectionName = Console.ReadLine();
+            Console.WriteLine($"Connect {vertexName} to ...?");
+            edgeName = Console.ReadLine();
 
-            if (SearchNodeName(nodeName, false) && SearchNodeName(connectionName, false))
+            if (SearchVertexName(vertexName, false) && SearchVertexName(edgeName, false))
             {
                 //Search for an empty space in the nodeConnections array
-                for (int i = 0; i < nodeConnections.GetLength(0); i++)
+                for (int i = 0; i < vertexLinks.GetLength(0); i++)
                 {
                     //If the i position is empty
-                    if (nodeConnections[i, 0] == null)
+                    if (vertexLinks[i, 0] == null)
                     {
                         //set the new connection entry
-                        nodeConnections[i, 0] = nodeName;
-                        nodeConnections[i, 1] = connectionName;
+                        vertexLinks[i, 0] = vertexName;
+                        vertexLinks[i, 1] = edgeName;
 
                         spaceFound = true;
 
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Connected {nodeName} with {connectionName}");
+                        Console.WriteLine($"Connected {vertexName} with {edgeName}");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         break;
@@ -202,15 +202,15 @@ namespace graphNodeTest
         /// <summary>
         /// Call to display all node connections from the nodeConnections array.
         /// </summary>
-        void DisplayNodeConnections()
+        void DisplayVertexLinking()
         {
             Console.WriteLine("|Nodes|\t|Connections|");
 
-            for (int i = 0; i < nodeConnections.GetLength(0); i++)
+            for (int i = 0; i < vertexLinks.GetLength(0); i++)
             {
-                for (int j = 0; j < nodeConnections.GetLength(1); j++)
+                for (int j = 0; j < vertexLinks.GetLength(1); j++)
                 {
-                    Console.Write($"{i}{nodeConnections[i, j]}\t");
+                    Console.Write($"{i} {vertexLinks[i, j]}\t");
                 }
                 Console.WriteLine();
             }
@@ -222,7 +222,7 @@ namespace graphNodeTest
         /// Call to display the nodes array and prompt the user which one to delete.
         /// <para>Marks the given array index as null</para>
         /// </summary>
-        void DeleteNode()
+        void DeleteVertex()
         {
             //Helper variables
             string userChoice;
@@ -241,10 +241,10 @@ namespace graphNodeTest
             } while (!Int32.TryParse(userChoice, out parsedAnswer));
 
             //Check if the given answer is inside the bounds of the array
-            if (parsedAnswer >= 0 && parsedAnswer <= nodes.Length)
+            if (parsedAnswer >= 0 && parsedAnswer <= vertexes.Length)
             {
                 //Nullify the given index position inside the array
-                nodes[parsedAnswer] = null;
+                vertexes[parsedAnswer] = null;
 
                 //Color text yellow
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -264,7 +264,7 @@ namespace graphNodeTest
         /// Call to prompt the user to delete a node connection from inside the nodeConnections array.
         /// <para>If it exists both array indexes get nullified.</para>
         /// </summary>
-        void DeleteNodeConnection()
+        void DeleteVertexEdge()
         {
             //Helper variables
             string userChoice;
@@ -276,18 +276,18 @@ namespace graphNodeTest
                 PrintSeparatorLines();
 
                 Console.WriteLine("Which connection to delete?");
-                DisplayNodeConnections(); //Display the node connections array
+                DisplayVertexLinking(); //Display the node connections array
 
                 //Cache and parse the user input
                 userChoice = Console.ReadLine();
             } while (!Int32.TryParse(userChoice, out parsedAnswer));
 
             //Check if the given answer is inside the bounds of the array
-            if (parsedAnswer >= 0 && parsedAnswer <= nodeConnections.GetLength(0))
+            if (parsedAnswer >= 0 && parsedAnswer <= vertexLinks.GetLength(0))
             {
                 //Clear both array entries
-                nodeConnections[parsedAnswer, 0] = null;
-                nodeConnections[parsedAnswer, 1] = null;
+                vertexLinks[parsedAnswer, 0] = null;
+                vertexLinks[parsedAnswer, 1] = null;
 
                 //Color text yellow
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -307,9 +307,9 @@ namespace graphNodeTest
         #region UTILITIES
         void DisplayNodesArray()
         {
-            for (int i = 0; i < nodes.Length; i++)
+            for (int i = 0; i < vertexes.Length; i++)
             {
-                Console.WriteLine($"Station {i}: {nodes[i]}");
+                Console.WriteLine($"Station {i}: {vertexes[i]}");
             }
         }
 
@@ -319,13 +319,13 @@ namespace graphNodeTest
         /// <param name="name">Name to search for.</param>
         /// <param name="printMsg">Change to false to not print the "Name already exists" message.</param>
         /// <returns>True if name is found, false otherwise</returns>
-        bool SearchNodeName(string name, bool printMsg = true)
+        bool SearchVertexName(string name, bool printMsg = true)
         {
             string simplifiedName = name.Replace(" ", "").ToLower();
 
-            for (int i = 0; i < nodes.Length; i++)
+            for (int i = 0; i < vertexes.Length; i++)
             {
-                if (simplifiedName == nodes[i])
+                if (simplifiedName == vertexes[i])
                 {
                     if (printMsg)
                     {
