@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace graphNodeTest
 {
@@ -7,9 +6,6 @@ namespace graphNodeTest
     {
         string[] nodes = new string[5];
         string[,] nodeConnections = new string[6, 2];
-
-        //int lastNodeIndex = 0;
-        int lastEmptyConnection = 0;
 
         static void Main(string[] args)
         {
@@ -50,11 +46,9 @@ namespace graphNodeTest
                 "\n 1) Create station" +
                 "\n 2) Create station connection" +
                 "\n 3) Print all station connections" +
-                "\n 5) Delete a station" +
-                "\n 6) Delete a station connection" +
-                "\n 0) Terminate program" +
-                "\n" +
-                "\nDEBUG 4) Print Nodes array");
+                "\n 4) Delete a station" +
+                "\n 5) Delete a station connection" +
+                "\n 0) Terminate program");
         }
 
         /// <summary>
@@ -78,16 +72,13 @@ namespace graphNodeTest
                     DisplayNodeConnections();
                     PrintSeparatorLines();
                     break;
-                case 4: //DEBUG: Display the nodes array
-                    DisplayNodesArray();
-                    PrintSeparatorLines();
-                    break;
-                case 5:
+                case 4: //Prompt the user to delete a node
                     DeleteNode();
                     PrintSeparatorLines();
                     break;
-                case 6:
-                    //Delete a node connection
+                case 5: //Prompt the user to delete a node connection
+                    DeleteNodeConnection();
+                    PrintSeparatorLines();
                     break;
                 case 0: //Terminate program
                     Environment.Exit(1);
@@ -149,26 +140,6 @@ namespace graphNodeTest
                 Console.WriteLine("Station list is full");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-
-            //Check if the nodes array is full
-            /*if (lastNodeIndex >= nodes.Length)
-            {
-                //Colour the text RED
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Station list is full");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else
-            {
-                //Add the new nodeName to the nodes array
-                nodes[lastNodeIndex] = simplifiedName;
-                lastNodeIndex++;
-
-                //Colour the text GREEN
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Station {nodeName} created");
-                Console.ForegroundColor = ConsoleColor.White;
-            }*/
         }
         #endregion
 
@@ -180,6 +151,7 @@ namespace graphNodeTest
         void CreateConnectionSequence()
         {
             string nodeName, connectionName;
+            bool spaceFound = false;
 
             Console.WriteLine("Connect which station ?");
             nodeName = Console.ReadLine();
@@ -189,22 +161,33 @@ namespace graphNodeTest
 
             if (SearchNodeName(nodeName, false) && SearchNodeName(connectionName, false))
             {
-                if (lastEmptyConnection >= nodeConnections.GetLength(0))
+                //Search for an empty space in the nodeConnections array
+                for (int i = 0; i < nodeConnections.GetLength(0); i++)
                 {
-                    Console.WriteLine("Station connection list is full");
-                    return;
+                    //If the i position is empty
+                    if (nodeConnections[i, 0] == null)
+                    {
+                        //set the new connection entry
+                        nodeConnections[i, 0] = nodeName;
+                        nodeConnections[i, 1] = connectionName;
+
+                        spaceFound = true;
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Connected {nodeName} with {connectionName}");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        break;
+                    }
                 }
 
-                nodeConnections[lastEmptyConnection, 0] = nodeName;
-                nodeConnections[lastEmptyConnection, 1] = connectionName;
-
-                lastEmptyConnection++;
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Connected {nodeName} with {connectionName}");
-                Console.ForegroundColor = ConsoleColor.White;
-
-                Console.WriteLine($"Current index {lastEmptyConnection}");
+                if (!spaceFound)
+                {
+                    //Colour the text RED
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Station connection list is full");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             else
             {
@@ -227,7 +210,7 @@ namespace graphNodeTest
             {
                 for (int j = 0; j < nodeConnections.GetLength(1); j++)
                 {
-                    Console.Write($"{nodeConnections[i, j]}\t");
+                    Console.Write($"{i}{nodeConnections[i, j]}\t");
                 }
                 Console.WriteLine();
             }
@@ -241,29 +224,79 @@ namespace graphNodeTest
         /// </summary>
         void DeleteNode()
         {
+            //Helper variables
             string userChoice;
             int parsedAnswer;
 
+            //Ask the user to delete a node at least once
             do
             {
                 PrintSeparatorLines();
 
                 Console.WriteLine("Which station to delete?");
-                DisplayNodesArray();
+                DisplayNodesArray(); //Display the nodes array
 
+                //Cache and parse the user input
                 userChoice = Console.ReadLine();
             } while (!Int32.TryParse(userChoice, out parsedAnswer));
 
+            //Check if the given answer is inside the bounds of the array
             if (parsedAnswer >= 0 && parsedAnswer <= nodes.Length)
             {
+                //Nullify the given index position inside the array
                 nodes[parsedAnswer] = null;
 
+                //Color text yellow
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"Deleted station from entry position number : {userChoice}");
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
             {
+                //Color text red
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Given number is out of bounds.");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        /// <summary>
+        /// Call to prompt the user to delete a node connection from inside the nodeConnections array.
+        /// <para>If it exists both array indexes get nullified.</para>
+        /// </summary>
+        void DeleteNodeConnection()
+        {
+            //Helper variables
+            string userChoice;
+            int parsedAnswer;
+
+            //Ask the user to delete a connection at least once
+            do
+            {
+                PrintSeparatorLines();
+
+                Console.WriteLine("Which connection to delete?");
+                DisplayNodeConnections(); //Display the node connections array
+
+                //Cache and parse the user input
+                userChoice = Console.ReadLine();
+            } while (!Int32.TryParse(userChoice, out parsedAnswer));
+
+            //Check if the given answer is inside the bounds of the array
+            if (parsedAnswer >= 0 && parsedAnswer <= nodeConnections.GetLength(0))
+            {
+                //Clear both array entries
+                nodeConnections[parsedAnswer, 0] = null;
+                nodeConnections[parsedAnswer, 1] = null;
+
+                //Color text yellow
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Deleted connection from entry position number : {userChoice}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                //Color text red
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Given number is out of bounds.");
                 Console.ForegroundColor = ConsoleColor.White;
