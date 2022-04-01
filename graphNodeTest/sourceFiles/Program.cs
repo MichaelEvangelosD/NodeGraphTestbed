@@ -8,7 +8,7 @@ namespace graphNodeTest
         string[] nodes = new string[5];
         string[,] nodeConnections = new string[6, 2];
 
-        int lastNodeIndex = 0;
+        //int lastNodeIndex = 0;
         int lastEmptyConnection = 0;
 
         static void Main(string[] args)
@@ -258,7 +258,9 @@ namespace graphNodeTest
             {
                 nodes[parsedAnswer] = null;
 
-                lastNodeIndex = parsedAnswer;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Deleted station from entry position number : {userChoice}");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             else
             {
