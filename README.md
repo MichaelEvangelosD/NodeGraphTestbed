@@ -1,1 +1,1 @@
-Initial commit
+This is a small exercise to practise the very basics of creating an undirected graph.
