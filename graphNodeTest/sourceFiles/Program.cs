@@ -130,6 +130,7 @@ namespace graphNodeTest
                 if (vertexes[i] == null)
                 {
                     vertexes[i] = simplifiedName;
+
                     spaceFound = true;
 
                     PrintColoredMessage(ConsoleColor.Green, $"Station {vertexName} created");
@@ -153,6 +154,7 @@ namespace graphNodeTest
         void CreateVertexEdgeSequence()
         {
             string vertexName, edgeName;
+            bool connectionFound = false;
             bool spaceFound = false;
 
             Console.WriteLine("Connect which station ?");
@@ -163,17 +165,33 @@ namespace graphNodeTest
 
             if (SearchVertexName(vertexName, false) && SearchVertexName(edgeName, false))
             {
-                //Search for an empty space in the nodeConnections array
                 for (int i = 0; i < vertexLinks.GetLength(0); i++)
                 {
-                    //If the i position is empty
+                    if ((vertexLinks[i, 0] == vertexName && vertexLinks[i, 1] == edgeName)
+                        || (vertexLinks[i, 0] == edgeName && vertexLinks[i, 1] == vertexName))
+                    {
+                        PrintColoredMessage(ConsoleColor.Red, "Connection already exists!");
+
+                        connectionFound = true;
+                        break;
+                    }
+                }
+
+                //Early exit in case a similar connection already exists
+                if (connectionFound) return;
+
+                //Search for an empty space in the vertexes array
+                for (int i = 0; i < vertexLinks.GetLength(0); i++)
+                {
+                    //If the i position is empty - then both positions are empty...
                     if (vertexLinks[i, 0] == null)
                     {
-                        //set the new connection entry
+                        //...set the new connection entry
                         vertexLinks[i, 0] = vertexName;
                         vertexLinks[i, 1] = edgeName;
 
                         spaceFound = true;
+                        connectionFound = false;
 
                         PrintColoredMessage(ConsoleColor.Green, $"Connected {vertexName} with {edgeName}");
 
@@ -181,7 +199,8 @@ namespace graphNodeTest
                     }
                 }
 
-                if (!spaceFound)
+                //Display a message if a space was not found and a similar connection does not exist
+                if (!spaceFound && !connectionFound)
                 {
                     //Colour the text RED
                     PrintColoredMessage(ConsoleColor.Red, "Station connection list is full");
@@ -239,8 +258,14 @@ namespace graphNodeTest
             //Check if the given answer is inside the bounds of the array
             if (parsedAnswer >= 0 && parsedAnswer <= vertexes.Length)
             {
+                //Cache the vertex name before it gets deleted so we can use it 
+                //to search the edges array for the connections
+                string cachedVertexName = vertexes[parsedAnswer];
+
                 //Nullify the given index position inside the vertexes array
                 DeleteVertexFromArray(vertexes, parsedAnswer);
+
+                SearchEdgeNameAndDelete(cachedVertexName, vertexLinks);
 
                 //Color text yellow
                 PrintColoredMessage(ConsoleColor.Yellow, $"Deleted station from entry position number : {userChoice}");
@@ -350,6 +375,29 @@ namespace graphNodeTest
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Call to cycle through the given array and set BOTH entries of the given name to null
+        /// </summary>
+        /// <param name="name">The name to delete.</param>
+        /// <param name="edgesArray">The array to search for the name in.</param>
+        void SearchEdgeNameAndDelete(string name, string[,] edgesArray)
+        {
+            for (int i = 0; i < edgesArray.GetLength(0); i++)
+            {
+                //If the current index is null then continue to the next one
+                if (edgesArray[i, 0] == null) continue;
+
+                //If the i index matches the given name then delete both array entries
+                if (edgesArray[i, 0] == name || edgesArray[i, 1] == name)
+                {
+                    DeleteVertexFromArray(edgesArray, i);
+
+                    PrintColoredMessage(ConsoleColor.Red, $"Deleted connection {edgesArray[i, 0]}-{edgesArray[i, 1]} " +
+                        $"from the connection list.");
+                }
+            }
         }
 
         /// <summary>
