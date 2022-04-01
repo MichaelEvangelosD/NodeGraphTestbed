@@ -28,10 +28,10 @@ namespace graphNodeTest
                 Console.Write("Choice: ");
                 answer = Console.ReadLine();
 
-                //Parse the user choice into an int
+                //Try parsing the user choice into an int
                 if (Int32.TryParse(answer, out result))
                 {
-                    //...and check if it is valid
+                    //...and check if it is a valid choice
                     SwitchOnAnswer(result);
                 }
             }
@@ -243,8 +243,8 @@ namespace graphNodeTest
             //Check if the given answer is inside the bounds of the array
             if (parsedAnswer >= 0 && parsedAnswer <= vertexes.Length)
             {
-                //Nullify the given index position inside the array
-                vertexes[parsedAnswer] = null;
+                //Nullify the given index position inside the vertexes array
+                DeleteVertexFromArray(vertexes, parsedAnswer);
 
                 //Color text yellow
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -286,8 +286,7 @@ namespace graphNodeTest
             if (parsedAnswer >= 0 && parsedAnswer <= vertexLinks.GetLength(0))
             {
                 //Clear both array entries
-                vertexLinks[parsedAnswer, 0] = null;
-                vertexLinks[parsedAnswer, 1] = null;
+                DeleteVertexFromArray(vertexLinks, parsedAnswer);
 
                 //Color text yellow
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -300,6 +299,29 @@ namespace graphNodeTest
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Given number is out of bounds.");
                 Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        /// <summary>
+        /// Call to set the given index inside the given array to NULL
+        /// </summary>
+        /// <param name="vertArray">The array to modify.</param>
+        /// <param name="index">The array index to set to null.</param>
+        void DeleteVertexFromArray(string[] vertArray, int index)
+        {
+            vertArray[index] = null;
+        }
+
+        /// <summary>
+        /// Call to set the [index,0] and [index,1] array positions to NULL.
+        /// </summary>
+        /// <param name="vertArray">The 2D array to modify</param>
+        /// <param name="index">The array index to set to null.</param>
+        void DeleteVertexFromArray(string[,] vertArray, int index)
+        {
+            for (int i = 0; i < vertArray.GetLength(1); i++)
+            {
+                vertArray[index, i] = null;
             }
         }
         #endregion
