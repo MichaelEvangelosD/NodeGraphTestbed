@@ -59,32 +59,38 @@ namespace graphNodeTest
         {
             switch (selection)
             {
-                case 1: //Create a new node
+                case 1: //Create a new vertex
                     CreateVertexSequence();
+
                     PrintSeparatorLines();
                     break;
-                case 2: //Create a new connection between nodes
+                case 2: //Create a new edge between vertexes
                     CreateVertexEdgeSequence();
+
                     PrintSeparatorLines();
                     break;
-                case 3: //Display the connections between nodes
+                case 3: //Display the edges between vertexes
                     PrintSeparatorLines();
+
                     DisplayVertexLinking();
+
                     PrintSeparatorLines();
                     break;
-                case 4: //Prompt the user to delete a node
+                case 4: //Prompt the user to delete a vertex
                     DeleteVertex();
+
                     PrintSeparatorLines();
                     break;
-                case 5: //Prompt the user to delete a node connection
+                case 5: //Prompt the user to delete a vertex edge
                     DeleteVertexEdge();
+
                     PrintSeparatorLines();
                     break;
                 case 0: //Terminate program
                     Environment.Exit(1);
                     break;
                 default: //When none of the above is selected
-                    Console.WriteLine("Please select a valid option.");
+                    PrintColoredMessage(ConsoleColor.Red, "Please select a valid option.");
                     break;
             }
         }
@@ -126,9 +132,7 @@ namespace graphNodeTest
                     vertexes[i] = simplifiedName;
                     spaceFound = true;
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Station {vertexName} created");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    PrintColoredMessage(ConsoleColor.Green, $"Station {vertexName} created");
                     break;
                 }
             }
@@ -136,9 +140,7 @@ namespace graphNodeTest
             if (!spaceFound)
             {
                 //Colour the text RED
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Station list is full");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Red, "Station list is full");
             }
         }
         #endregion
@@ -173,9 +175,7 @@ namespace graphNodeTest
 
                         spaceFound = true;
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"Connected {vertexName} with {edgeName}");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        PrintColoredMessage(ConsoleColor.Green, $"Connected {vertexName} with {edgeName}");
 
                         break;
                     }
@@ -184,16 +184,12 @@ namespace graphNodeTest
                 if (!spaceFound)
                 {
                     //Colour the text RED
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Station connection list is full");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    PrintColoredMessage(ConsoleColor.Red, "Station connection list is full");
                 }
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid station selected.");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Red, "A station was not found.");
             }
         }
         #endregion
@@ -234,7 +230,7 @@ namespace graphNodeTest
                 PrintSeparatorLines();
 
                 Console.WriteLine("Which station to delete?");
-                DisplayNodesArray(); //Display the nodes array
+                DisplayVertexesArray(); //Display the vertex array
 
                 //Cache and parse the user input
                 userChoice = Console.ReadLine();
@@ -247,16 +243,12 @@ namespace graphNodeTest
                 DeleteVertexFromArray(vertexes, parsedAnswer);
 
                 //Color text yellow
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Deleted station from entry position number : {userChoice}");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Yellow, $"Deleted station from entry position number : {userChoice}");
             }
             else
             {
                 //Color text red
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Given number is out of bounds.");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Red, "Given number is out of bounds.");
             }
         }
 
@@ -276,7 +268,7 @@ namespace graphNodeTest
                 PrintSeparatorLines();
 
                 Console.WriteLine("Which connection to delete?");
-                DisplayVertexLinking(); //Display the node connections array
+                DisplayVertexLinking(); //Display the vertex edges array
 
                 //Cache and parse the user input
                 userChoice = Console.ReadLine();
@@ -289,16 +281,12 @@ namespace graphNodeTest
                 DeleteVertexFromArray(vertexLinks, parsedAnswer);
 
                 //Color text yellow
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Deleted connection from entry position number : {userChoice}");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Yellow, $"Deleted connection from entry position number : {userChoice}");
             }
             else
             {
                 //Color text red
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Given number is out of bounds.");
-                Console.ForegroundColor = ConsoleColor.White;
+                PrintColoredMessage(ConsoleColor.Red, "Given number is out of bounds.");
             }
         }
 
@@ -327,7 +315,10 @@ namespace graphNodeTest
         #endregion
 
         #region UTILITIES
-        void DisplayNodesArray()
+        /// <summary>
+        /// Call to write all the contents of the vertexes array into the console
+        /// </summary>
+        void DisplayVertexesArray()
         {
             for (int i = 0; i < vertexes.Length; i++)
             {
@@ -336,7 +327,7 @@ namespace graphNodeTest
         }
 
         /// <summary>
-        /// Call to search the nodes array for the given name
+        /// Call to search the vertexes array for the given name
         /// </summary>
         /// <param name="name">Name to search for.</param>
         /// <param name="printMsg">Change to false to not print the "Name already exists" message.</param>
@@ -351,9 +342,7 @@ namespace graphNodeTest
                 {
                     if (printMsg)
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("Name already exists");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        PrintColoredMessage(ConsoleColor.Cyan, "Name already exists");
                     }
 
                     return true;
@@ -361,6 +350,19 @@ namespace graphNodeTest
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Call to WriteLine the message in the console with the given color,
+        /// <para>color is set back to white after the message gets printed.</para>
+        /// </summary>
+        /// <param name="cColor">Color of the given sentence</param>
+        /// <param name="message">The message to display</param>
+        void PrintColoredMessage(ConsoleColor cColor, string message)
+        {
+            Console.ForegroundColor = cColor;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         /// <summary>
